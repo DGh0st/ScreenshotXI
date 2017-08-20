@@ -1,0 +1,9 @@
+Package: com.dgh0st.screenshotxi
+Name: ScreenshotXI
+Depends: mobilesubstrate, preferenceloader, org.thebigboss.libcolorpicker
+Version: 1.0
+Architecture: iphoneos-arm
+Description: iOS 11 screenshot feature on older iOS versions
+Maintainer: DGh0st <deeppwnage@yahoo.com>
+Author: DGh0st <deeppwnage@yahoo.com>
+Section: Tweaks
