@@ -7,14 +7,17 @@ extern ESSWindow *window;
 +(UIImage *)imageFromView:(UIView *)view andView:(UIView *)secondView {
 	UIGraphicsBeginImageContextWithOptions([view bounds].size, NO, 0.0);
 	CGContextRef context = UIGraphicsGetCurrentContext();
-	//[view drawViewHierarchyInRect:[view bounds] afterScreenUpdates:YES];
-	[view.layer renderInContext:context];
-	CGContextSaveGState(context);
-	CGContextTranslateCTM(context, 0.0, [view bounds].size.height);
-	CGContextScaleCTM(context, 1.0, -1.0);
-	//[secondView drawViewHierarchyInRect:[secondView bounds] afterScreenUpdates:NO];
-	[secondView.layer renderInContext:context];
-	CGContextRestoreGState(context);
+	if (CGAffineTransformIsIdentity(secondView.transform)) {
+		[view.layer renderInContext:context];
+		[secondView.layer renderInContext:context];
+	} else {
+		[view.layer renderInContext:context];
+		CGContextSaveGState(context);
+		CGContextTranslateCTM(context, 0.0, [view bounds].size.height);
+		CGContextScaleCTM(context, 1.0, -1.0);
+		[secondView.layer renderInContext:context];
+		CGContextRestoreGState(context);
+	}
 	UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
 	UIGraphicsEndImageContext();
 	return [result retain];
@@ -30,7 +33,6 @@ extern ESSWindow *window;
 		useLongPressAsPan = YES;
 		timerDidTrigger = NO;
 		didHideStatusBar = NO;
-		currentEditingImage = nil;
 		resultEditedImage = nil;
 	}
 	return self;
@@ -63,7 +65,6 @@ extern ESSWindow *window;
 	if (shareButton != nil)
 		[shareButton release];
 	shareButton = nil;
-	currentEditingImage = nil;
 	if (resultEditedImage != nil) 
 		[resultEditedImage release];
 	resultEditedImage = nil;
@@ -154,8 +155,6 @@ extern ESSWindow *window;
 			[[%c(SBUIController) sharedInstance] _hideKeyboard];
 		}
 
-		currentEditingImage = view.image;
-
 		if (resultEditedImage != nil)
 			[resultEditedImage release];
 		resultEditedImage = nil;
@@ -169,6 +168,8 @@ extern ESSWindow *window;
 				[_markUpEditor setAnnotationEditingEnabled:YES];
 			[_markUpEditor setShapeDetectionEnabled:YES];
 			[_markUpEditor setDelegate:self]; // really doesn't do anything as I don't implement any methods for delegate
+			_markUpEditor.annotationController.overlayShouldPixelate = NO;
+			[_markUpEditor.annotationController currentPageController].shouldPixelate = NO;
 
 			NSBundle *bundle = [NSBundle bundleWithPath:kBundlePath];
 
@@ -218,11 +219,13 @@ extern ESSWindow *window;
 -(void)saveMarkUp {
 	if (_markUpEditor != nil) {
 		if ([SXIPreferences sharedInstance].isSaveUneditedEnabled)
-			[self saveScreenshot:currentEditingImage];
+			[self saveScreenshot:_markUpEditor.sourceContent];
 
 		if (resultEditedImage == nil) {
-			UIImageView *imageView = [[UIImageView alloc] initWithImage:currentEditingImage];
-			imageView.frame = CGRectMake(0, 0, currentEditingImage.size.width, currentEditingImage.size.height);
+			[_markUpEditor.annotationController.modelController deselectAllAnnotations];
+			UIImage *sourceImage = (UIImage *)(_markUpEditor.sourceContent);
+			UIImageView *imageView = [[UIImageView alloc] initWithImage:sourceImage];
+			imageView.frame = CGRectMake(0, 0, sourceImage.size.width, sourceImage.size.height);
 			UIView *overlayView = [_markUpEditor.annotationController currentPageController].overlayView;
 			resultEditedImage = [ESSController imageFromView:imageView andView:overlayView];
 			
@@ -238,11 +241,13 @@ extern ESSWindow *window;
 -(void)forceSaveMarkUpWithCompletion:(void (^)())completion {
 	if (_markUpEditor != nil) {
 		if ([SXIPreferences sharedInstance].isSaveUneditedEnabled)
-			[self saveScreenshot:currentEditingImage];
+			[self saveScreenshot:_markUpEditor.sourceContent];
 
 		if (resultEditedImage == nil) {
-			UIImageView *imageView = [[UIImageView alloc] initWithImage:currentEditingImage];
-			imageView.frame = CGRectMake(0, 0, currentEditingImage.size.width, currentEditingImage.size.height);
+			[_markUpEditor.annotationController.modelController deselectAllAnnotations];
+			UIImage *sourceImage = (UIImage *)(_markUpEditor.sourceContent);
+			UIImageView *imageView = [[UIImageView alloc] initWithImage:sourceImage];
+			imageView.frame = CGRectMake(0, 0, sourceImage.size.width, sourceImage.size.height);
 			UIView *overlayView = [_markUpEditor.annotationController currentPageController].overlayView;
 			resultEditedImage = [ESSController imageFromView:imageView andView:overlayView];
 			
@@ -251,15 +256,17 @@ extern ESSWindow *window;
 		}
 		[self saveScreenshot:resultEditedImage];
 
-		[self dismissMarkUpEditorAnimated:NO completion:completion];
+		[self dismissMarkUpEditorAnimated:NO completion:nil];
 	}
 }
 
 -(void)shareMarkUp:(UIBarButtonItem *)sender {
 	if (_markUpEditor != nil) {
 		if (resultEditedImage == nil) {
-			UIImageView *imageView = [[UIImageView alloc] initWithImage:currentEditingImage];
-			imageView.frame = CGRectMake(0, 0, currentEditingImage.size.width, currentEditingImage.size.height);
+			[_markUpEditor.annotationController.modelController deselectAllAnnotations];
+			UIImage *sourceImage = (UIImage *)(_markUpEditor.sourceContent);
+			UIImageView *imageView = [[UIImageView alloc] initWithImage:sourceImage];
+			imageView.frame = CGRectMake(0, 0, sourceImage.size.width, sourceImage.size.height);
 			UIView *overlayView = [_markUpEditor.annotationController currentPageController].overlayView;
 			resultEditedImage = [ESSController imageFromView:imageView andView:overlayView];
 			
@@ -286,7 +293,7 @@ extern ESSWindow *window;
 
 -(void)cancelMarkUp {
 	if ([SXIPreferences sharedInstance].isSaveUneditedOnCancelEnabled)
-		[self saveScreenshot:currentEditingImage];
+		[self saveScreenshot:_markUpEditor.sourceContent];
 	[self dismissMarkUpEditorAnimated:YES completion:nil];
 }
 
@@ -306,7 +313,6 @@ extern ESSWindow *window;
 				saveButton = nil;
 				[shareButton release];
 				shareButton = nil;
-				currentEditingImage = nil;
 
 				if (resultEditedImage != nil)
 					[resultEditedImage release];

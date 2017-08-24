@@ -85,11 +85,19 @@ typedef enum {
 
 @interface AKPageController : NSObject
 @property (nonatomic,retain) UIView *overlayView;
+@property (assign) BOOL shouldPixelate;
+@end
+
+@interface AKModelController
+-(void)deselectAllAnnotations;
 @end
 
 @interface AKController : NSObject
 @property (retain) AKUndoController *undoController;
+@property (retain) AKModelController *modelController; 
+@property (assign, nonatomic) BOOL overlayShouldPixelate;
 -(AKPageController *)currentPageController;
+-(void)commitEditing;
 @end
 
 @interface MUImageContentViewController : UIViewController
@@ -106,6 +114,8 @@ typedef enum {
 @property (nonatomic,retain) UINavigationBar *navBar;
 @property (nonatomic,retain) NSUndoManager *akUndoManager;
 @property (retain) AKController *annotationController;
+@property (nonatomic, retain) id sourceContent;
+-(void)_saveEditing:(id)arg1;
 -(void)setImage:(id)arg1;
 -(void)setShapeDetectionEnabled:(BOOL)arg1;
 -(void)setAnnotationEditingEnabled:(BOOL)arg1; // iOS 10.0 +
@@ -182,7 +192,6 @@ typedef enum {
 	UIBarButtonItem *saveButton;
 	UIBarButtonItem *shareButton;
 	BOOL didHideStatusBar;
-	UIImage *currentEditingImage;
 	UIImage *resultEditedImage;
 }
 @property (nonatomic, assign) BOOL rotationEnabled;
