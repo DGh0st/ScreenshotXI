@@ -256,7 +256,7 @@ extern ESSWindow *window;
 		}
 		[self saveScreenshot:resultEditedImage];
 
-		[self dismissMarkUpEditorAnimated:NO completion:nil];
+		[self dismissMarkUpEditorAnimated:NO completion:completion];
 	}
 }
 
