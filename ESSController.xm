@@ -72,9 +72,9 @@ extern ESSWindow *window;
 }
 
 -(void)saveScreenshot:(UIImage *)image {
-	if (%c(SBScreenshotter))
-		UIImageWriteToSavedPhotosAlbum(image, [%c(SBScreenshotter) sharedInstance], @selector(finishedWritingScreenshot:didFinishSavingWithError:context:), nil);
-	else
+	if (%c(SBScreenShotter))
+		UIImageWriteToSavedPhotosAlbum(image, [%c(SBScreenShotter) sharedInstance], @selector(finishedWritingScreenshot:didFinishSavingWithError:context:), nil);
+	else if (%c(SBScreenshotManager))
 		[[((SpringBoard *)[%c(SpringBoard) sharedApplication]).screenshotManager _persistenceCoordinator] saveScreenshot:image withCompletion:nil];
 }
 
@@ -329,7 +329,6 @@ extern ESSWindow *window;
 					[(SpringBoard *)[%c(SpringBoard) sharedApplication] setStatusBarHidden:NO];
 					[self setNeedsStatusBarAppearanceUpdate];
 				}
-
 
 				if (completion != nil)
 					completion();
