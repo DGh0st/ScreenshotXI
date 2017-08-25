@@ -97,13 +97,9 @@ typedef enum {
 @property (retain) AKModelController *modelController; 
 @property (assign, nonatomic) BOOL overlayShouldPixelate;
 -(AKPageController *)currentPageController;
--(void)commitEditing;
 @end
 
 @interface MUImageContentViewController : UIViewController
-@property (nonatomic,retain) UIView *combinedContentView; // 9.3.3 +
-@property (nonatomic,retain) UIImageView *imageView;
--(void)setDownsampledImageScale:(CGFloat)arg1;
 @end
 
 @protocol MarkupViewControllerDelegate <NSObject>
@@ -115,7 +111,6 @@ typedef enum {
 @property (nonatomic,retain) NSUndoManager *akUndoManager;
 @property (retain) AKController *annotationController;
 @property (nonatomic, retain) id sourceContent;
--(void)_saveEditing:(id)arg1;
 -(void)setImage:(id)arg1;
 -(void)setShapeDetectionEnabled:(BOOL)arg1;
 -(void)setAnnotationEditingEnabled:(BOOL)arg1; // iOS 10.0 +
@@ -206,6 +201,7 @@ typedef enum {
 -(BOOL)isEqualToMarkUpEditor:(id)editor;
 -(BOOL)isEqualToUndoController:(id)undoController;
 -(BOOL)isEqualToImageContentViewController:(id)imageContentViewController;
+-(BOOL)isEqualToSourceContent:(id)sourceContent;
 -(BOOL)isPresentingEditor;
 -(void)forceSaveMarkUpWithCompletion:(void (^)())completion;
 -(void)dismissMarkUpEditorAnimated:(BOOL)animated completion:(void (^)())completion;

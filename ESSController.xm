@@ -411,6 +411,10 @@ extern ESSWindow *window;
 	return _markUpEditor != nil && [_markUpEditor.contentViewController isEqual:imageContentViewController];
 }
 
+-(BOOL)isEqualToSourceContent:(id)sourceContent {
+	return _markUpEditor != nil && [_markUpEditor.sourceContent isEqual:sourceContent];
+}
+
 -(BOOL)isPresentingEditor {
 	return [self isEqualToMarkUpEditor:[self presentedViewController]];
 }

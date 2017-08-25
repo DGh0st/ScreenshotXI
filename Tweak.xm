@@ -351,6 +351,19 @@ UIImage *_screenshotImage;
 }
 %end
 
+%hook MUImageDownsamplingUtilities // winterboard fix (might even fix anemone)
++(CGImageSourceRef)_newImageSourceWithSourceContent:(id)arg1 {
+	if (window != nil) {
+		ESSController *viewController = (ESSController *)(window.rootViewController);
+		if ([viewController isEqualToSourceContent:arg1])
+			return %orig(nil);
+		return %orig(arg1);
+	} else {
+		return %orig(arg1);
+	}
+}
+%end
+
 static void preferencesChanged() {
 	[[SXIPreferences sharedInstance] updatePreferences];
 }

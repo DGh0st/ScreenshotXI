@@ -95,7 +95,7 @@ extern ESSWindow *window;
 	CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"transform.translation.x"];
 	animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
 	animation.duration = preferenceManager.previewAnimationSpeed;
-	animation.values = @[ @(-15), @(15), @(-15), @(15), @(-7.5), @(7.5), @(-3), @(3), @(0) ];
+	animation.values = @[ @(-12), @(12), @(-12), @(12), @(-10), @(10), @(-7.5), @(7.5), @(-5), @(5), @(-3), @(0) ];
 	[self.layer addAnimation:animation forKey:@"shake"];
 }
 @end
