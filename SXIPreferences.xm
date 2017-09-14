@@ -12,8 +12,17 @@
 
 -(id)init {
 	self = [super init];
-	if (self != nil)
+	if (self != nil) {
 		[self updatePreferences];
+
+		self.aboveHomeAndAppsWindowLevel = 1048;
+		self.aboveLockscreenWindowLevel = 1051;
+		self.aboveControlCenterWindowLevel = 1091;
+		self.aboveNotificationCenterWindowLevel = 1096;
+		self.aboveNotificationBannerWindowLevel = 1101;
+		self.aboveSpringboardAlertWindowLevel = 2001;
+		self.screenFlashWindowLevel = 2200;
+	}
 	return self;
 }
 
@@ -35,6 +44,7 @@
 
 	_isEnabled = [prefs objectForKey:@"isEnabled"] ? [[prefs objectForKey:@"isEnabled"] boolValue] : YES;
 	_isRightSwipeEnabled = [prefs objectForKey:@"isRightSwipeEnabled"] ? [[prefs objectForKey:@"isRightSwipeEnabled"] boolValue] : NO;
+	_isNotifyApplicationsEnabled = [prefs objectForKey:@"isNotifyApplicationsEnabled"] ? [[prefs objectForKey:@"isNotifyApplicationsEnabled"] boolValue] : YES;
 	_dismissTime = [prefs objectForKey:@"dismissTime"] ? [[prefs objectForKey:@"dismissTime"] floatValue] : 5.0;
 	_isUnlimitedDismissTimeEnabled = [prefs objectForKey:@"isUnlimitedDismissTimeEnabled"] ? [[prefs objectForKey:@"isUnlimitedDismissTimeEnabled"] boolValue] : NO;
 	_isShutterSoundDisabled = [prefs objectForKey:@"isShutterSoundDisabled"] ? [[prefs objectForKey:@"isShutterSoundDisabled"] boolValue] : NO;
@@ -52,25 +62,25 @@
 	DisplayWindowLevel windowPriority = [prefs objectForKey:@"windowPriority"] ? (DisplayWindowLevel)[[prefs objectForKey:@"windowPriority"] intValue] : kAboveHomeAppsLockScreens;
 	switch (windowPriority) {
 		case kAboveHomeAppsLockScreens:
-			_currentTweakLevel = 1051;
+			_currentTweakLevel = self.aboveLockscreenWindowLevel;
 			break;
 		case kAboveControlCenter:
-			_currentTweakLevel = 1091;
+			_currentTweakLevel = self.aboveControlCenterWindowLevel;
 			break;
 		case kAboveNotificationCenter:
-			_currentTweakLevel = 1096;
+			_currentTweakLevel = self.aboveNotificationCenterWindowLevel;
 			break;
 		case kAboveNotificationBanners:
-			_currentTweakLevel = 1101;
+			_currentTweakLevel = self.aboveNotificationBannerWindowLevel;
 			break;
 		case kAboveSpringBoardAlerts:
-			_currentTweakLevel = 2001;
+			_currentTweakLevel = self.aboveSpringboardAlertWindowLevel;
 			break;
 		case kScreenshotFlash:
-			_currentTweakLevel = 2200;
+			_currentTweakLevel = self.screenFlashWindowLevel;
 			break;
 		default:
-			_currentTweakLevel = 1051;
+			_currentTweakLevel = self.aboveLockscreenWindowLevel;
 			break;
 	}
 
@@ -83,6 +93,48 @@
 	_previewAnimationSpeed = [prefs objectForKey:@"previewAnimationSpeed"] ? [[prefs objectForKey:@"previewAnimationSpeed"] floatValue] : 0.15;
 	_previewAlpha = [prefs objectForKey:@"previewAlpha"] ? [[prefs objectForKey:@"previewAlpha"] floatValue] : 0.25;
 	_previewScale = [prefs objectForKey:@"previewScale"] ? [[prefs objectForKey:@"previewScale"] floatValue] : 1.05;
+}
+
+-(void)updatePriority {
+	CFPreferencesAppSynchronize((CFStringRef)kTweakIdentifier);
+
+	NSMutableDictionary *prefs = nil;
+	if ([NSHomeDirectory() isEqualToString:@"/var/mobile"]) {
+		CFArrayRef keyList = CFPreferencesCopyKeyList((CFStringRef)kTweakIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+		if (keyList != nil) {
+			prefs = (NSMutableDictionary *)CFPreferencesCopyMultiple(keyList, (CFStringRef)kTweakIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+			if (prefs == nil)
+				prefs = [NSMutableDictionary dictionary];
+			CFRelease(keyList);
+		}
+	} else {
+		prefs = [NSMutableDictionary dictionaryWithContentsOfFile:kSettingsPath];
+	}
+
+	DisplayWindowLevel windowPriority = [prefs objectForKey:@"windowPriority"] ? (DisplayWindowLevel)[[prefs objectForKey:@"windowPriority"] intValue] : kAboveHomeAppsLockScreens;
+	switch (windowPriority) {
+		case kAboveHomeAppsLockScreens:
+			_currentTweakLevel = self.aboveLockscreenWindowLevel;
+			break;
+		case kAboveControlCenter:
+			_currentTweakLevel = self.aboveControlCenterWindowLevel;
+			break;
+		case kAboveNotificationCenter:
+			_currentTweakLevel = self.aboveNotificationCenterWindowLevel;
+			break;
+		case kAboveNotificationBanners:
+			_currentTweakLevel = self.aboveNotificationBannerWindowLevel;
+			break;
+		case kAboveSpringBoardAlerts:
+			_currentTweakLevel = self.aboveSpringboardAlertWindowLevel;
+			break;
+		case kScreenshotFlash:
+			_currentTweakLevel = self.screenFlashWindowLevel;
+			break;
+		default:
+			_currentTweakLevel = self.aboveLockscreenWindowLevel;
+			break;
+	}
 }
 
 -(NSString *)uiHexColor {

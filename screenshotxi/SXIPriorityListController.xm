@@ -46,7 +46,7 @@
 	if (self.currentPriority == nil)
 		[self updatePriority];
 
-	if (sourceIndexPath == nil || destinationIndexPath == nil || sourceIndexPath.row >= [self.currentPriority count] || destinationIndexPath.row <= 0) {
+	if (sourceIndexPath == nil || destinationIndexPath == nil || sourceIndexPath.row < 0 || sourceIndexPath.row >= [self.currentPriority count] || destinationIndexPath.row <= 0 || destinationIndexPath.row >= [self.currentPriority count]) {
 		[self.tableView reloadData];
 		return;
 	}

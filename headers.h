@@ -16,8 +16,6 @@
 #define kBundlePath @"/Library/Application Support/ScreenshotXI/ImageAssets.bundle"
 #define kPhotoShutterSystemSound 0x454
 #define kImageMinimumScaleMultiplier 0.75
-#define kHideBehindLockscreenWindowLevel 1048
-#define kLockscreenWindowLevel 1051
 
 /* 
 ------------------------------ iOS's Window Level (Atleast on iOS 10 iPhone 6+) ------------------------------
@@ -148,16 +146,43 @@ typedef enum {
 -(id)view;
 @end
 
+@interface SBAlert : UIViewController
+@end
+
+@interface SBLockScreenViewControllerBase : SBAlert
+@end
+
+@interface SBLockScreenViewController : SBLockScreenViewControllerBase
+-(id)lockScreenView;
+@end
+
+@interface SBDashBoardViewController : SBLockScreenViewControllerBase
+-(id)dashBoardView;
+@end
+
+@interface SBLockScreenManager : NSObject
+@property (nonatomic,readonly) SBLockScreenViewControllerBase *lockScreenViewController;
++(id)sharedInstance;
+@end
+
 @interface SBBacklightController
 +(id)sharedInstance;
 -(void)resetLockScreenIdleTimer;
+@end
+
+@interface UIRemoteApplication : NSObject
+-(void)didTakeScreenshot;
+@end
+
+@interface SBApplication
+-(UIRemoteApplication *)remoteApplication;
 @end
 
 @interface SpringBoard : UIApplication
 @property (nonatomic,readonly) SBScreenshotManager *screenshotManager;
 -(BOOL)isLocked;
 -(UIInterfaceOrientation)activeInterfaceOrientation;
--(id)_accessibilityFrontMostApplication;
+-(SBApplication *)_accessibilityFrontMostApplication;
 @end
 
 @interface SBUIController : NSObject
@@ -220,6 +245,7 @@ typedef enum {
 @interface SXIPreferences : NSObject
 @property (nonatomic, assign, readonly) BOOL isEnabled;
 @property (nonatomic, assign, readonly) BOOL isRightSwipeEnabled;
+@property (nonatomic, assign, readonly) BOOL isNotifyApplicationsEnabled;
 @property (nonatomic, assign, readonly) CGFloat dismissTime;
 @property (nonatomic, assign, readonly) BOOL isUnlimitedDismissTimeEnabled;
 @property (nonatomic, assign, readonly) BOOL isShutterSoundDisabled;
@@ -243,7 +269,16 @@ typedef enum {
 @property (nonatomic, assign, readonly) CGFloat previewAnimationSpeed;
 @property (nonatomic, assign, readonly) CGFloat previewAlpha;
 @property (nonatomic, assign, readonly) CGFloat previewScale;
+@property (nonatomic, assign) UIWindowLevel aboveHomeAndAppsWindowLevel;
+@property (nonatomic, assign) UIWindowLevel aboveLockscreenWindowLevel;
+@property (nonatomic, assign) UIWindowLevel aboveControlCenterWindowLevel;
+@property (nonatomic, assign) UIWindowLevel aboveNotificationCenterWindowLevel;
+@property (nonatomic, assign) UIWindowLevel aboveNotificationBannerWindowLevel;
+@property (nonatomic, assign) UIWindowLevel aboveSpringboardAlertWindowLevel;
+@property (nonatomic, assign) UIWindowLevel screenFlashWindowLevel;
 +(SXIPreferences *)sharedInstance;
 -(void)updatePreferences;
+-(void)updatePriority;
 -(NSString *)uiHexColor;
 @end
+

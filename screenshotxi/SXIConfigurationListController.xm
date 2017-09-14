@@ -13,6 +13,13 @@
 		[enableRightSwipe setProperty:@"Right Swipe" forKey:@"label"];
 		[enableRightSwipe setProperty:kSettingsChangedIdentifier forKey:@"PostNotification"];
 
+		PSSpecifier *notifyApplication = [PSSpecifier preferenceSpecifierNamed:@"Notify Applications" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+		[notifyApplication setProperty:@YES forKey:@"default"];
+		[notifyApplication setProperty:kTweakIdentifier forKey:@"defaults"];
+		[notifyApplication setProperty:@"isNotifyApplicationsEnabled" forKey:@"key"];
+		[notifyApplication setProperty:@"Notify Applications" forKey:@"label"];
+		[notifyApplication setProperty:kSettingsChangedIdentifier forKey:@"PostNotification"];
+
 		PSSpecifier *dismissTimeGroup = [PSSpecifier groupSpecifierWithName:@"Mini Image Dismiss Time"];
 		[dismissTimeGroup setProperty:@"Mini Image Dismiss Time" forKey:@"label"];
 		[dismissTimeGroup setProperty:@"With unlimited dimiss time, mini-image still gets dismissed when image is shared or edited" forKey:@"footerText"];
@@ -118,7 +125,7 @@
 		[resetConfigurationButton setProperty:@"Reset Configuration" forKey:@"label"];
 		[resetConfigurationButton setProperty:@1 forKey:@"alignment"];
 
-		_specifiers = [@[swipeGroup, enableRightSwipe, dismissTimeGroup, miniImageDismissSlider, unlimitedDismiss, soundGroup, disableShutterSound, saveGroup, dismissAction, autoDimissAction, shareAction, editorAction, editorCancelAction, spamSave, behavior, dismissOnLock, dismissOnCall, lockscreen, share, editing, resetGroup, resetConfigurationButton] retain];
+		_specifiers = [@[swipeGroup, enableRightSwipe, notifyApplication, dismissTimeGroup, miniImageDismissSlider, unlimitedDismiss, soundGroup, disableShutterSound, saveGroup, dismissAction, autoDimissAction, shareAction, editorAction, editorCancelAction, spamSave, behavior, dismissOnLock, dismissOnCall, lockscreen, share, editing, resetGroup, resetConfigurationButton] retain];
 	}
 
 	return _specifiers;

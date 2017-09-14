@@ -10,6 +10,25 @@ ESSWindow *window = nil; // need it to be global so it can be accessed in ESSCon
 
 	if (window != nil)
 		[window release];
+	
+	SXIPreferences *preferenceManager = [SXIPreferences sharedInstance];
+
+	SBLockScreenManager *manager = [%c(SBLockScreenManager) sharedInstance];
+	if (manager != nil) {
+		SBLockScreenViewControllerBase *lockScreenViewController = [manager lockScreenViewController];
+		if ([lockScreenViewController isKindOfClass:%c(SBLockScreenViewController)]) {
+			UIView *lockScreenView = [(SBLockScreenViewController *)lockScreenViewController lockScreenView];
+			preferenceManager.aboveLockscreenWindowLevel = lockScreenView.window.windowLevel + 1;
+			preferenceManager.aboveHomeAndAppsWindowLevel = lockScreenView.window.windowLevel - 2;
+		} else if ([lockScreenViewController isKindOfClass:%c(SBDashBoardViewController)]) {
+			UIView *dashBoardView = [(SBDashBoardViewController *)lockScreenViewController dashBoardView];
+			preferenceManager.aboveLockscreenWindowLevel = dashBoardView.window.windowLevel + 1;
+			preferenceManager.aboveHomeAndAppsWindowLevel = dashBoardView.window.windowLevel - 2;
+		}
+	}
+
+	[preferenceManager updatePriority];
+
 	window = [[ESSWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 }
 
@@ -83,8 +102,8 @@ ESSWindow *window = nil; // need it to be global so it can be accessed in ESSCon
 				}
 			}
 		} else {
-			if (preferenceManager.currentTweakLevel == kLockscreenWindowLevel)
-				window.windowLevel = kHideBehindLockscreenWindowLevel;
+			if (preferenceManager.currentTweakLevel == preferenceManager.aboveLockscreenWindowLevel)
+				window.windowLevel = preferenceManager.aboveHomeAndAppsWindowLevel;
 		}
 	}
 }
@@ -180,6 +199,16 @@ UIImage *_screenshotImage;
 		if (_flashWindow != nil) {
 			_flashWindow.hidden = YES;
 			window.windowLevel = _flashWindow.windowLevel; // 2200 for flash window
+
+			if (preferenceManager.screenFlashWindowLevel != window.windowLevel) {
+				preferenceManager.screenFlashWindowLevel = window.windowLevel;
+				[preferenceManager updatePriority];
+			}
+		}
+
+		if (preferenceManager.isNotifyApplicationsEnabled) {
+			UIRemoteApplication *remoteApplication = [(SpringBoard *)[%c(SpringBoard) sharedApplication] _accessibilityFrontMostApplication].remoteApplication;
+			[remoteApplication didTakeScreenshot];
 		}
 
 		if ([(SpringBoard *)[%c(SpringBoard) sharedApplication] isLocked])
@@ -195,8 +224,8 @@ UIImage *_screenshotImage;
 			containerView.center = CGPointMake(preferenceManager.miniImageMargin + preferenceManager.miniImageWhitePadding + imageViewWidth / 2, window.frame.size.height - imageViewHeight / 2 - preferenceManager.miniImageMargin - preferenceManager.miniImageWhitePadding);
 			[containerView.layer setCornerRadius:preferenceManager.miniImageRoundness];
 		} completion:^(BOOL finished) {
-			if (preferenceManager.currentTweakLevel == kLockscreenWindowLevel)
-				window.windowLevel = ([(SpringBoard *)[%c(SpringBoard) sharedApplication] isLocked]) ? kLockscreenWindowLevel : kHideBehindLockscreenWindowLevel;
+			if (preferenceManager.currentTweakLevel == preferenceManager.aboveLockscreenWindowLevel)
+				window.windowLevel = ([(SpringBoard *)[%c(SpringBoard) sharedApplication] isLocked]) ? preferenceManager.aboveLockscreenWindowLevel : preferenceManager.aboveHomeAndAppsWindowLevel;
 			else
 				window.windowLevel = preferenceManager.currentTweakLevel;
 
