@@ -255,6 +255,7 @@ typedef enum {
 @property (nonatomic, assign, readonly) BOOL isSaveUneditedEnabled;
 @property (nonatomic, assign, readonly) BOOL isSaveUneditedOnCancelEnabled;
 @property (nonatomic, assign, readonly) BOOL isSpamSaveEnabled;
+@property (nonatomic, assign, readonly) BOOL isCopyToPasteBoardEnabled;
 @property (nonatomic, assign, readonly) BOOL isDismissOnLockEnabled;
 @property (nonatomic, assign, readonly) BOOL isDismissOnCallEnabled;
 @property (nonatomic, assign, readonly) BOOL isLockscreenShareDisabled;

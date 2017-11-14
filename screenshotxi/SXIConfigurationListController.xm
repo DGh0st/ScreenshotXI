@@ -46,6 +46,12 @@
 		[disableShutterSound setProperty:@"isShutterSoundDisabled" forKey:@"key"];
 		[disableShutterSound setProperty:@"Disable Shutter Sound" forKey:@"label"];
 		[disableShutterSound setProperty:kSettingsChangedIdentifier forKey:@"PostNotification"];
+		PSSpecifier *copyToClipboard = [PSSpecifier preferenceSpecifierNamed:@"Copy to clipboard" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+		[copyToClipboard setProperty:@NO forKey:@"default"];
+		[copyToClipboard setProperty:kTweakIdentifier forKey:@"defaults"];
+		[copyToClipboard setProperty:@"isCopyToPasteBoardEnabled" forKey:@"key"];
+		[copyToClipboard setProperty:@"Copy to clipboard" forKey:@"label"];
+		[copyToClipboard setProperty:kSettingsChangedIdentifier forKey:@"PostNotification"];
 
 		PSSpecifier *saveGroup = [PSSpecifier groupSpecifierWithName:@"Screenshot"];
 		[saveGroup setProperty:@"Screenshot" forKey:@"label"];
@@ -125,7 +131,7 @@
 		[resetConfigurationButton setProperty:@"Reset Configuration" forKey:@"label"];
 		[resetConfigurationButton setProperty:@1 forKey:@"alignment"];
 
-		_specifiers = [@[swipeGroup, enableRightSwipe, notifyApplication, dismissTimeGroup, miniImageDismissSlider, unlimitedDismiss, soundGroup, disableShutterSound, saveGroup, dismissAction, autoDimissAction, shareAction, editorAction, editorCancelAction, spamSave, behavior, dismissOnLock, dismissOnCall, lockscreen, share, editing, resetGroup, resetConfigurationButton] retain];
+		_specifiers = [@[swipeGroup, enableRightSwipe, notifyApplication, dismissTimeGroup, miniImageDismissSlider, unlimitedDismiss, soundGroup, disableShutterSound, copyToClipboard, saveGroup, dismissAction, autoDimissAction, shareAction, editorAction, editorCancelAction, spamSave, behavior, dismissOnLock, dismissOnCall, lockscreen, share, editing, resetGroup, resetConfigurationButton] retain];
 	}
 
 	return _specifiers;

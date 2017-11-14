@@ -54,6 +54,7 @@
 	_isSaveUneditedEnabled = [prefs objectForKey:@"isSaveUneditedEnabled"] ? [[prefs objectForKey:@"isSaveUneditedEnabled"] boolValue] : NO;
 	_isSaveUneditedOnCancelEnabled = [prefs objectForKey:@"isSaveUneditedOnCancelEnabled"] ? [[prefs objectForKey:@"isSaveUneditedOnCancelEnabled"] boolValue] : YES;
 	_isSpamSaveEnabled = [prefs objectForKey:@"isSpamSaveEnabled"] ? [[prefs objectForKey:@"isSpamSaveEnabled"] boolValue] : YES;
+	_isCopyToPasteBoardEnabled = [prefs objectForKey:@"isCopyToPasteBoardEnabled"] ? [[prefs objectForKey:@"isCopyToPasteBoardEnabled"] boolValue] : NO;
 	_isDismissOnLockEnabled = [prefs objectForKey:@"isDismissOnLockEnabled"] ? [[prefs objectForKey:@"isDismissOnLockEnabled"] boolValue] : NO;
 	_isDismissOnCallEnabled = [prefs objectForKey:@"isDismissOnCallEnabled"] ? [[prefs objectForKey:@"isDismissOnCallEnabled"] boolValue] : YES;
 	_isLockscreenShareDisabled = [prefs objectForKey:@"isLockscreenShareDisabled"] ? [[prefs objectForKey:@"isLockscreenShareDisabled"] boolValue] : YES;

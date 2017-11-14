@@ -263,6 +263,9 @@ UIImage *_screenshotImage;
 					if (finished) {
 						[lightBlurView removeFromSuperview];
 						[lightBlurView release];
+
+						if (preferenceManager.isCopyToPasteBoardEnabled)
+							[UIPasteboard generalPasteboard].image = image;
 					}
 				}];
 
