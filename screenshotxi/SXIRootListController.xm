@@ -57,7 +57,7 @@
 		[copyrightGroup setProperty:@1 forKey:@"footerAlignment"];
 		[copyrightGroup setProperty:@"ScreenshotXI © 2017 DGh0st" forKey:@"footerText"];
 
-		_specifiers = [@[enableGroup, enableSwitch, optionsGroup, configuration, priority, appearance, creditGroup, email, twitter, copyrightGroup] retain];
+		_specifiers = [@[enableGroup, enableSwitch, optionsGroup, configuration, priority, appearance, creditGroup, email, twitter, copyrightGroup] mutableCopy];
 	}
 
 	return _specifiers;

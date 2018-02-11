@@ -62,6 +62,12 @@
 		[dismissAction setProperty:@"isSaveOnSwipeDismissEnabled" forKey:@"key"];
 		[dismissAction setProperty:@"Save on Manual Dismiss" forKey:@"label"];
 		[dismissAction setProperty:kSettingsChangedIdentifier forKey:@"PostNotification"];
+		PSSpecifier *rightDismissAction = [PSSpecifier preferenceSpecifierNamed:@"Save on Right Dismiss" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
+		[rightDismissAction setProperty:@NO forKey:@"default"];
+		[rightDismissAction setProperty:kTweakIdentifier forKey:@"defaults"];
+		[rightDismissAction setProperty:@"isSaveOnRightSwipeDismissEnabled" forKey:@"key"];
+		[rightDismissAction setProperty:@"Save on Right Dismiss" forKey:@"label"];
+		[rightDismissAction setProperty:kSettingsChangedIdentifier forKey:@"PostNotification"];
 		PSSpecifier *autoDimissAction = [PSSpecifier preferenceSpecifierNamed:@"Save on Auto Dismiss" target:self set:@selector(setPreferenceValue:specifier:) get:@selector(readPreferenceValue:) detail:nil cell:PSSwitchCell edit:nil];
 		[autoDimissAction setProperty:@YES forKey:@"default"];
 		[autoDimissAction setProperty:kTweakIdentifier forKey:@"defaults"];
@@ -131,7 +137,7 @@
 		[resetConfigurationButton setProperty:@"Reset Configuration" forKey:@"label"];
 		[resetConfigurationButton setProperty:@1 forKey:@"alignment"];
 
-		_specifiers = [@[swipeGroup, enableRightSwipe, notifyApplication, dismissTimeGroup, miniImageDismissSlider, unlimitedDismiss, soundGroup, disableShutterSound, copyToClipboard, saveGroup, dismissAction, autoDimissAction, shareAction, editorAction, editorCancelAction, spamSave, behavior, dismissOnLock, dismissOnCall, lockscreen, share, editing, resetGroup, resetConfigurationButton] retain];
+		_specifiers = [@[swipeGroup, enableRightSwipe, notifyApplication, dismissTimeGroup, miniImageDismissSlider, unlimitedDismiss, soundGroup, disableShutterSound, copyToClipboard, saveGroup, dismissAction, rightDismissAction, autoDimissAction, shareAction, editorAction, editorCancelAction, spamSave, behavior, dismissOnLock, dismissOnCall, lockscreen, share, editing, resetGroup, resetConfigurationButton] mutableCopy];
 	}
 
 	return _specifiers;

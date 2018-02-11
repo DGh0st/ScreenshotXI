@@ -136,7 +136,7 @@
 		[resetAppearanceButton setProperty:@"Reset Appearance" forKey:@"label"];
 		[resetAppearanceButton setProperty:@1 forKey:@"alignment"];
 
-		_specifiers = [@[animationSpeedGroup, animationSpeedSlider, colorGroup, colorPicker, miniImageFinalScaleGroup, finalScaleSlider, miniImageWhitePaddingGroup, miniImageWhitePaddingSlider, miniImageMarginGroup, miniImageMarginSlider, miniImageRoundnessGroup, miniImageRoundnessSlider, dismissAnimationSpeedGroup, dismissAnimationSpeedSlider, previewAnimationSpeedGroup, previewAnimationSpeedSlider, previewAlphaGroup, previewAlphaSlider, previewFinalScaleGroup, previewScaleSlider, resetGroup, resetAppearanceButton] retain];
+		_specifiers = [@[animationSpeedGroup, animationSpeedSlider, colorGroup, colorPicker, miniImageFinalScaleGroup, finalScaleSlider, miniImageWhitePaddingGroup, miniImageWhitePaddingSlider, miniImageMarginGroup, miniImageMarginSlider, miniImageRoundnessGroup, miniImageRoundnessSlider, dismissAnimationSpeedGroup, dismissAnimationSpeedSlider, previewAnimationSpeedGroup, previewAnimationSpeedSlider, previewAlphaGroup, previewAlphaSlider, previewFinalScaleGroup, previewScaleSlider, resetGroup, resetAppearanceButton] mutableCopy];
 	}
 
 	return _specifiers;
@@ -156,6 +156,12 @@
 		}
 	}
 	[self reloadSpecifiers];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+	[self clearCache];
+	[self reload];
+	[super viewWillAppear:animated];
 }
 
 @end

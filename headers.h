@@ -250,6 +250,7 @@ typedef enum {
 @property (nonatomic, assign, readonly) BOOL isUnlimitedDismissTimeEnabled;
 @property (nonatomic, assign, readonly) BOOL isShutterSoundDisabled;
 @property (nonatomic, assign, readonly) BOOL isSaveOnSwipeDismissEnabled;
+@property (nonatomic, assign, readonly) BOOL isSaveOnRightSwipeDismissEnabled;
 @property (nonatomic, assign, readonly) BOOL isSaveOnAutoDismissEnabled;
 @property (nonatomic, assign, readonly) BOOL isSaveOnShareEnabled;
 @property (nonatomic, assign, readonly) BOOL isSaveUneditedEnabled;

@@ -11,10 +11,16 @@ extern ESSWindow *window;
 		[view.layer renderInContext:context];
 		[secondView.layer renderInContext:context];
 	} else {
+		// calculate the translations and scales
+		CGFloat scaleX = secondView.transform.a;
+		CGFloat scaleY = secondView.transform.d;
+		CGFloat translateX = scaleX < 0.0 ? [view bounds].size.width * -scaleX : 0.0;
+		CGFloat translateY = scaleY < 0.0 ? [view bounds].size.height * -scaleY : 0.0;
+
 		[view.layer renderInContext:context];
 		CGContextSaveGState(context);
-		CGContextTranslateCTM(context, 0.0, [view bounds].size.height);
-		CGContextScaleCTM(context, 1.0, -1.0);
+		CGContextTranslateCTM(context, translateX, translateY);
+		CGContextScaleCTM(context, scaleX, scaleY);
 		[secondView.layer renderInContext:context];
 		CGContextRestoreGState(context);
 	}
@@ -441,7 +447,7 @@ extern ESSWindow *window;
 		if (![view isKindOfClass:%c(ESSContainerView)])
 			[self forceHideWithoutAnimations:view];
 		else
-			[UIView animateWithDuration:[SXIPreferences sharedInstance].dismissAnimationSpeed animations:^{
+			[UIView animateWithDuration:preferenceManager.dismissAnimationSpeed animations:^{
 				[view setTransform:CGAffineTransformMakeTranslation(-(2 * preferenceManager.miniImageMargin + view.frame.size.width), 0)];
 				view.alpha = 0;
 			} completion:^(BOOL finished) {
@@ -508,7 +514,7 @@ extern ESSWindow *window;
 			} else if (containerView.frame.origin.x + translationPoint.x + velocityPoint.x > self.view.frame.size.width && preferenceManager.isRightSwipeEnabled) {
 				[self forceHideRight:containerView];
 
-				if (preferenceManager.isSaveOnSwipeDismissEnabled)
+				if (preferenceManager.isSaveOnRightSwipeDismissEnabled)
 					[self saveScreenshot:containerView.image];
 			} else {
 				[UIView animateWithDuration:preferenceManager.dismissAnimationSpeed animations:^{
@@ -553,7 +559,7 @@ extern ESSWindow *window;
 		case UIGestureRecognizerStateChanged:
 			if (timerDidTrigger) {
 				break;
-			} else if (useLongPressAsPan) {				
+			} else if (useLongPressAsPan) {
 				if (differenceX > 0 && !preferenceManager.isRightSwipeEnabled)
 					differenceX = 0;
 				[containerView setTransform:CGAffineTransformMakeTranslation(differenceX, 0)];
@@ -578,15 +584,24 @@ extern ESSWindow *window;
 			if (timerDidTrigger) {
 				[containerView unhighlightViewWithCompletion:nil];
 			} else if (useLongPressAsPan) {
-				if (containerView.frame.origin.x + differenceX < -containerView.frame.size.width || containerView.frame.origin.x + differenceX > self.view.frame.size.width)
+				if (containerView.frame.origin.x + differenceX < -containerView.frame.size.width) {
 					[self forceHide:containerView];
-				else
+
+					if (preferenceManager.isSaveOnSwipeDismissEnabled)
+						[self saveScreenshot:containerView.image];
+				} else if (containerView.frame.origin.x + differenceX > self.view.frame.size.width && preferenceManager.isRightSwipeEnabled) {
+					[self forceHideRight:containerView];
+
+					if (preferenceManager.isSaveOnRightSwipeDismissEnabled)
+						[self saveScreenshot:containerView.image];
+				} else {
 					[UIView animateWithDuration:preferenceManager.dismissAnimationSpeed animations:^{
 						[containerView setTransform:CGAffineTransformMakeTranslation(0, 0)];
 					} completion:^(BOOL finished) {
 						if (!preferenceManager.isUnlimitedDismissTimeEnabled)
 							[self performSelector:@selector(autoHide:) withObject:containerView afterDelay:preferenceManager.dismissTime];
 					}];
+				}
 			} else {
 				[containerView unhighlightViewWithCompletion:^{
 					if ([NSDate timeIntervalSinceReferenceDate] - pressStartTime >= kLongPressEndDuration && fabs(differenceX) <= kLongPressRange)

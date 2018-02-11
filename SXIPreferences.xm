@@ -49,6 +49,7 @@
 	_isUnlimitedDismissTimeEnabled = [prefs objectForKey:@"isUnlimitedDismissTimeEnabled"] ? [[prefs objectForKey:@"isUnlimitedDismissTimeEnabled"] boolValue] : NO;
 	_isShutterSoundDisabled = [prefs objectForKey:@"isShutterSoundDisabled"] ? [[prefs objectForKey:@"isShutterSoundDisabled"] boolValue] : NO;
 	_isSaveOnSwipeDismissEnabled = [prefs objectForKey:@"isSaveOnSwipeDismissEnabled"] ? [[prefs objectForKey:@"isSaveOnSwipeDismissEnabled"] boolValue] : YES;
+	_isSaveOnRightSwipeDismissEnabled = [prefs objectForKey:@"isSaveOnRightSwipeDismissEnabled"] ? [[prefs objectForKey:@"isSaveOnRightSwipeDismissEnabled"] boolValue] : NO;
 	_isSaveOnAutoDismissEnabled = [prefs objectForKey:@"isSaveOnAutoDismissEnabled"] ? [[prefs objectForKey:@"isSaveOnAutoDismissEnabled"] boolValue] : YES;
 	_isSaveOnShareEnabled = [prefs objectForKey:@"isSaveOnShareEnabled"] ? [[prefs objectForKey:@"isSaveOnShareEnabled"] boolValue] : YES;
 	_isSaveUneditedEnabled = [prefs objectForKey:@"isSaveUneditedEnabled"] ? [[prefs objectForKey:@"isSaveUneditedEnabled"] boolValue] : NO;
