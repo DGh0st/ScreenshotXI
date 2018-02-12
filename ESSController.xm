@@ -12,10 +12,10 @@ extern ESSWindow *window;
 		[secondView.layer renderInContext:context];
 	} else {
 		// calculate the translations and scales
-		CGFloat scaleX = secondView.transform.a;
-		CGFloat scaleY = secondView.transform.d;
-		CGFloat translateX = scaleX < 0.0 ? [view bounds].size.width * -scaleX : 0.0;
-		CGFloat translateY = scaleY < 0.0 ? [view bounds].size.height * -scaleY : 0.0;
+		CGFloat scaleX = secondView.transform.a * view.frame.size.width / secondView.frame.size.width;
+		CGFloat scaleY = secondView.transform.d * view.frame.size.height / secondView.frame.size.height;
+		CGFloat translateX = scaleX < 0.0 ? [secondView bounds].size.width * -scaleX : 0.0;
+		CGFloat translateY = scaleY < 0.0 ? [secondView bounds].size.height * -scaleY : 0.0;
 
 		[view.layer renderInContext:context];
 		CGContextSaveGState(context);
@@ -256,7 +256,7 @@ extern ESSWindow *window;
 			imageView.frame = CGRectMake(0, 0, sourceImage.size.width, sourceImage.size.height);
 			UIView *overlayView = [_markUpEditor.annotationController currentPageController].overlayView;
 			resultEditedImage = [ESSController imageFromView:imageView andView:overlayView];
-			
+
 			[imageView release];
 			overlayView = nil;
 		}
@@ -275,7 +275,7 @@ extern ESSWindow *window;
 			imageView.frame = CGRectMake(0, 0, sourceImage.size.width, sourceImage.size.height);
 			UIView *overlayView = [_markUpEditor.annotationController currentPageController].overlayView;
 			resultEditedImage = [ESSController imageFromView:imageView andView:overlayView];
-			
+
 			[imageView release];
 			overlayView = nil;
 		}
