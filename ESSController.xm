@@ -284,8 +284,14 @@ extern ESSWindow *window;
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 			activityViewController.popoverPresentationController.sourceView = [sender view];
 		[activityViewController setCompletionWithItemsHandler:^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activtyError) {
-			if (completed)
+			if (completed) {
+				SXIPreferences *preferenceManager = [SXIPreferences sharedInstance];
+				if (preferenceManager.isSaveUneditedOnShareEnabled)
+					[self saveScreenshot:_markUpEditor.sourceContent];
+				if (activityType != UIActivityTypeSaveToCameraRoll && preferenceManager.isSaveOnShareEnabled)
+					[self saveScreenshot:resultEditedImage];
 				[self dismissMarkUpEditorAnimated:YES completion:nil];
+			}
 		}];
 		activityViewController.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
 		activityViewController.showKeyboardAutomatically = YES;

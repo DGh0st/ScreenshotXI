@@ -255,6 +255,7 @@ typedef enum {
 @property (nonatomic, assign, readonly) BOOL isSaveOnShareEnabled;
 @property (nonatomic, assign, readonly) BOOL isSaveUneditedEnabled;
 @property (nonatomic, assign, readonly) BOOL isSaveUneditedOnCancelEnabled;
+@property (nonatomic, assign, readonly) BOOL isSaveUneditedOnShareEnabled;
 @property (nonatomic, assign, readonly) BOOL isSpamSaveEnabled;
 @property (nonatomic, assign, readonly) BOOL isCopyToPasteBoardEnabled;
 @property (nonatomic, assign, readonly) BOOL isDismissOnLockEnabled;
@@ -283,4 +284,3 @@ typedef enum {
 -(void)updatePriority;
 -(NSString *)uiHexColor;
 @end
-

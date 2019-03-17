@@ -35,11 +35,11 @@
 		if (keyList != nil) {
 			prefs = (NSMutableDictionary *)CFPreferencesCopyMultiple(keyList, (CFStringRef)kTweakIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
 			if (prefs == nil)
-				prefs = [NSMutableDictionary dictionary];
+				prefs = [NSMutableDictionary new];
 			CFRelease(keyList);
 		}
 	} else {
-		prefs = [NSMutableDictionary dictionaryWithContentsOfFile:kSettingsPath];
+		prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:kSettingsPath];
 	}
 
 	_isEnabled = [prefs objectForKey:@"isEnabled"] ? [[prefs objectForKey:@"isEnabled"] boolValue] : YES;
@@ -54,6 +54,7 @@
 	_isSaveOnShareEnabled = [prefs objectForKey:@"isSaveOnShareEnabled"] ? [[prefs objectForKey:@"isSaveOnShareEnabled"] boolValue] : YES;
 	_isSaveUneditedEnabled = [prefs objectForKey:@"isSaveUneditedEnabled"] ? [[prefs objectForKey:@"isSaveUneditedEnabled"] boolValue] : NO;
 	_isSaveUneditedOnCancelEnabled = [prefs objectForKey:@"isSaveUneditedOnCancelEnabled"] ? [[prefs objectForKey:@"isSaveUneditedOnCancelEnabled"] boolValue] : YES;
+	_isSaveUneditedOnShareEnabled = [prefs objectForKey:@"isSaveUneditedOnShareEnabled"] ? [[prefs objectForKey:@"isSaveUneditedOnShareEnabled"] boolValue] : YES;
 	_isSpamSaveEnabled = [prefs objectForKey:@"isSpamSaveEnabled"] ? [[prefs objectForKey:@"isSpamSaveEnabled"] boolValue] : YES;
 	_isCopyToPasteBoardEnabled = [prefs objectForKey:@"isCopyToPasteBoardEnabled"] ? [[prefs objectForKey:@"isCopyToPasteBoardEnabled"] boolValue] : NO;
 	_isDismissOnLockEnabled = [prefs objectForKey:@"isDismissOnLockEnabled"] ? [[prefs objectForKey:@"isDismissOnLockEnabled"] boolValue] : NO;
@@ -95,6 +96,8 @@
 	_previewAnimationSpeed = [prefs objectForKey:@"previewAnimationSpeed"] ? [[prefs objectForKey:@"previewAnimationSpeed"] floatValue] : 0.15;
 	_previewAlpha = [prefs objectForKey:@"previewAlpha"] ? [[prefs objectForKey:@"previewAlpha"] floatValue] : 0.25;
 	_previewScale = [prefs objectForKey:@"previewScale"] ? [[prefs objectForKey:@"previewScale"] floatValue] : 1.05;
+	
+	[prefs release];
 }
 
 -(void)updatePriority {
@@ -106,11 +109,11 @@
 		if (keyList != nil) {
 			prefs = (NSMutableDictionary *)CFPreferencesCopyMultiple(keyList, (CFStringRef)kTweakIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
 			if (prefs == nil)
-				prefs = [NSMutableDictionary dictionary];
+				prefs = [NSMutableDictionary new];
 			CFRelease(keyList);
 		}
 	} else {
-		prefs = [NSMutableDictionary dictionaryWithContentsOfFile:kSettingsPath];
+		prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:kSettingsPath];
 	}
 
 	DisplayWindowLevel windowPriority = [prefs objectForKey:@"windowPriority"] ? (DisplayWindowLevel)[[prefs objectForKey:@"windowPriority"] intValue] : kAboveHomeAppsLockScreens;
@@ -137,6 +140,8 @@
 			_currentTweakLevel = self.aboveLockscreenWindowLevel;
 			break;
 	}
+
+	[prefs release];
 }
 
 -(NSString *)uiHexColor {
